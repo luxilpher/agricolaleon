@@ -1,0 +1,1247 @@
+/* =========================================================
+   1. MODIFICA LA MANERA EN QUE SE MUEVE EN LA PAGINA EL MENU, PARA QUE SCROLEE 
+   ========================================================= */
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+/* =========================================================
+   2. PALETA DE COLORES Y ESTILOS BASE (MODO CLARO)
+   ========================================================= */
+:root {
+    --rojo-principal: #D32F2F;
+    --verde-principal: #2E7D32;
+    --verde-hover: #1B5E20;
+    --azul-principal: #1976D2;
+    --azul-oscuro: #0D47A1;
+    --texto-oscuro: #212121;
+    --fondo-claro: #F4F6F8;
+    --blanco: #FFFFFF;
+    --sombra-suave: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --sombra-fuerte: 0 8px 24px rgba(0, 0, 0, 0.18);
+    --transicion: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+
+/* =========================================================
+   3. ADAPTACIÓN AL MODO OSCURO (BOTON Y COLORES)
+   ========================================================= */
+:root:has(#modo-ocular:checked) {
+    --texto-oscuro: #FFFFFF;
+    /* El texto pasa a blanco */
+    --fondo-claro: #121212;
+    /* El fondo general pasa a oscuro */
+    --blanco: #1E1E1E;
+    /* Las tarjetas cambian a un gris oscuro elegante */
+}
+
+#modo-ocular {
+    display: none;
+    /* Oculta el cuadrito del checkbox */
+}
+
+.btn-modo {
+    cursor: pointer;
+    padding: 6px 14px;
+    border-radius: 20px;
+    background-color: transparent;
+    border: 2px solid var(--azul-oscuro);
+    color: var(--texto-oscuro);
+    font-weight: 700;
+    font-size: 0.85rem;
+    user-select: none;
+    transition: var(--transicion);
+    white-space: nowrap;
+    margin-left: 20px;
+}
+
+.btn-modo:hover {
+    background-color: var(--azul-oscuro);
+    color: #ffffff;
+    transform: scale(1.05);
+}
+
+/* Texto por defecto cuando está en modo oscuro (o apagado) */
+.btn-modo .texto-modo::before {
+    content: "🌙";
+}
+
+/* CONDICIÓN EN CSS: Cuando el checkbox está marcado (Modo claro activo) */
+#modo-ocular:checked+.btn-modo .texto-modo::before {
+    content: "☀️";
+}
+
+
+
+/* =========================================================
+   4. PARAMETROS DEL BODY y PARAMETROS GENERALES
+   ========================================================= */
+
+body {
+    /* 1. Elimina los márgenes y rellenos por defecto del navegador */
+    margin: 0;
+    padding: 0;
+
+    /* 2. Asegura que la página ocupe siempre como mínimo toda la pantalla */
+    min-height: 100vh;
+
+    /* 3. Tipografía base predeterminada para todo el sitio */
+    font-family: 'Segoe UI', Arial, sans-serif;
+
+    /* 4. Colores base sincronizados (puedes usar tus variables o colores directos) */
+    color: var(--texto-oscuro);
+    background-color: var(--fondo-claro);
+
+    /* 5. Suaviza el texto para que se vea más nítido en las pantallas */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Sirve para definir la altura de la línea o el espaciado vertical entre renglones */
+    line-height: 1.6;
+
+    /* 6. Bloquea cualquier desbordamiento accidental hacia los lados */
+    overflow-x: hidden;
+}
+
+/* configuracion para que lleguen hasta el titulo y no quede por debajo */
+section,
+[id] {
+    scroll-margin-top: 4px;
+    /* Ajusta este valor según la altura de tu menú */
+}
+
+
+p {
+    text-align: center;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 20px;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.section-title h2 {
+    font-size: 2.2rem;
+    color: var(--azul-oscuro);
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+.section-title h2::after {
+    content: '';
+    display: block;
+    width: 70%;
+    height: 4px;
+    background: linear-gradient(to right, var(--rojo-principal), var(--verde-principal));
+    margin: 8px auto 0 auto;
+    border-radius: 2px;
+}
+
+/* =========================================================
+   AQUI TERMINA LAS MODIFICAIONES GENERALES
+   ========================================================= */
+
+
+
+
+
+/* =========================================================
+   1. UBICACION Y HORARIO. Primer div del HTML
+   ========================================================= */
+
+.ubic-horar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    /* Forzamos que ocupe el 100% real de la pantalla */
+    width: 100%;
+    box-sizing: border-box;
+    /* Evita que el padding expanda el ancho y genere scroll horizontal */
+
+    /* Degradado corporativo */
+    background: linear-gradient(135deg, var(--rojo-principal), var(--azul-oscuro));
+
+    color: white !important;
+    padding: 8px 20px;
+    /* Margen interno cómodo a los lados */
+    font-size: 0.88rem;
+    font-family: 'Segoe UI', Arial, sans-serif;
+
+    /* Modificación del borde inferior (puedes cambiar el grosor y color aquí) */
+    border-bottom: 3px solid var(--verde-principal);
+}
+
+
+
+/* =========================================================
+   2. ESTILOS PARA EL ENCABEZADO Y MENÚ DE NAVEGACIÓN. ABARCA TODO LO QUE ESTA DENTRO DEL HEADER
+   ========================================================= */
+
+/* 1. Contenedor general del encabezado fijo arriba */
+header {
+    background-color: var(--blanco);
+    color: var(--texto-oscuro);
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: var(--sombra-suave);
+    border-bottom: 3px solid var(--rojo-principal);
+    transition: var(--transicion);
+}
+
+
+/* 2. Caja que alinea todos los elementos del menú de lado a lado */
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    gap: 15px;
+}
+
+
+/* 3. ESTILO DEL LOGOTIPO Y TEXTO DEL MISMO */
+.logo-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    transition: var(--transicion);
+
+}
+
+.logo-box:hover {
+    transform: scale(1.03);
+}
+
+.logo-jpeg {
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-title {
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--texto-oscuro);
+}
+
+.logo-subtitle {
+    font-size: 0.75rem;
+    color: var(--rojo-principal);
+    font-weight: 600;
+}
+
+
+/*AQUI TERMINA LOGOTIPO,TEXTO DE LOGOTIPO*/
+
+
+/* 4. Lista de enlaces del menú */
+
+.nav-menu {
+    max-width: 100%;
+    width: 60%;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-menu li a {
+    text-decoration: none;
+    color: var(--texto-oscuro);
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 8px 14px;
+    border-radius: 20px;
+    transition: var(--transicion);
+    white-space: nowrap;
+}
+
+.nav-menu li a:hover {
+    color: var(--verde-principal);
+}
+
+/* 1. Muestra el menú al marcar el checkbox */
+#menu-toggle:checked~.nav-menu {
+    display: flex;
+}
+
+/* 5. Botón especial de Cotizar en el menú */
+.btn-cotizar {
+    background-color: var(--rojo-principal);
+    color: #FFFFFF !important;
+    box-shadow: 0 2px 8px rgba(211, 47, 47, 0.4);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.btn-cotizar:hover {
+    background-color: #b71c1c;
+    transform: translateY(-2px) scale(1.05);
+}
+
+.menu-btn,
+#menu-toggle {
+    display: none;
+}
+
+
+
+/* =========================================================
+  AQUI TERMINA ESTILOS PARA EL ENCABEZADO Y MENÚ DE NAVEGACIÓN. ABARCA TODO LO QUE ESTA DENTRO DEL HEADER
+   ========================================================= */
+
+/* =========================================================
+  SECCION DE DESCARGA DE MANUAL
+   ========================================================= */
+
+.hero-section {
+    position: relative;
+    height: 760px;
+    overflow: hidden;
+    background-color: #000;
+}
+
+.slider-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    animation: sliderAnim 15s infinite;
+    background-size: cover;
+    background-position: center;
+}
+
+.slide-1 {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1600&q=80');
+    animation-delay: 0s;
+}
+
+.slide-2 {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1586771107445-d3ca888129ff?auto=format&fit=crop&w=1600&q=80');
+    animation-delay: 5s;
+}
+
+.slide-3 {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1600&q=80');
+    animation-delay: 10s;
+}
+
+@keyframes sliderAnim {
+    0% {
+        opacity: 0;
+        transform: scale(1);
+    }
+
+    6% {
+        opacity: 1;
+    }
+
+    33% {
+        opacity: 1;
+    }
+
+    39% {
+        opacity: 0;
+        transform: scale(1.05);
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.hero-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+    z-index: 10;
+    width: 90%;
+    max-width: 800px;
+}
+
+.hero-content h1 {
+
+    font-size: 2.8rem;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+    font-weight: 800;
+}
+
+.hero-content h1,
+.btn-main {
+    color: #FFFFFF;
+}
+
+.hero-content a {
+    color: white;
+}
+
+.btn-main {
+    display: inline-block;
+    background-color: var(--verde-principal);
+    color: var(--blanco);
+    padding: 12px 28px;
+    text-decoration: none;
+    font-weight: 700;
+    border-radius: 30px;
+    transition: var(--transicion);
+    box-shadow: 0 4px 15px rgba(46, 125, 50, 0.4);
+}
+
+.btn-main:hover {
+    background-color: white !important;
+    color: var(--verde-principal);
+    transform: translateY(-3px) scale(1.03);
+}
+
+
+/* =========================================================
+  AQUI TERMINA SECCION DE DESCARGA DE MANUAL
+   ========================================================= */
+
+
+/* =========================================================
+   CARRUSEL AUTOMÁTICO. SECCION DE INICIO
+   ========================================================= */
+.cards-carousel-section {
+    width: 100%;
+    padding: 40px 0;
+    background-color: var(--fondo-claro);
+    box-sizing: border-box;
+    overflow: hidden;
+    /* Oculta lo que sale de los márgenes al animar */
+
+}
+
+.carousel-container-modern {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    width: max-content;
+    /* Permite que las tarjetas fluyan en línea continua */
+
+    /* Aquí aplicamos la animación automática de movimiento */
+    animation: autoScroll 35s linear infinite;
+
+
+
+}
+
+/* LA MAGIA: Se detiene por completo al colocar el mouse encima */
+.carousel-container-modern:hover {
+    animation-play-state: paused;
+}
+
+/* Definición del movimiento continuo */
+@keyframes autoScroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        /* Se desplaza hacia la izquierda el equivalente al ancho de las tarjetas */
+        transform: translateX(calc(-50% - 10px));
+    }
+}
+
+/* Barra de desplazamiento estética (opcional si prefieres dejar el scroll manual también) */
+.cards-carousel-section {
+    -webkit-overflow-scrolling: touch;
+
+}
+
+/* Estilo de cada tarjeta (se mantiene igual para cuidar el diseño) */
+.cards-carousel-section label.card-item {
+    flex: 0 0 280px;
+    height: 420px;
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 25px;
+    box-sizing: border-box;
+    box-shadow: var(--sombra-suave);
+    transition: var(--transicion);
+    cursor: pointer;
+}
+
+.cards-carousel-section label.card-item:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--sombra-fuerte);
+}
+
+.cards-carousel-section .card-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+.cards-carousel-section .card-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 10%, rgba(0, 0, 0, 0.2) 60%);
+    z-index: 2;
+}
+
+.cards-carousel-section .card-content {
+    position: relative;
+    z-index: 3;
+}
+
+.cards-carousel-section .card-content h3 {
+    color: #FFFFFF;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.cards-carousel-section .card-content h2 {
+    color: #FFFFFF;
+    font-size: 1.8rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 0;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+
+/* Estilo general para los títulos de sección */
+.titulo-seccion {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--azul-principal);
+    /* O el color que prefieras, ej: #1976D2 */
+    text-align: center;
+    margin: 40px 0 15px 0;
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* La línea decorativa degradada de abajo */
+.titulo-seccion::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -8px;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(to right, var(--rojo-principal), var(--verde-principal));
+
+
+}
+
+/* =========================================================
+   AQUI TERMINA SECCION DE INICIO
+   ========================================================= */
+
+
+
+/* =========================================================
+   PRODUCTOS. SECCION DE SERVICIO
+   ========================================================= */
+
+.filter-controls {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 40px;
+}
+
+.filter-controls input[type="radio"] {
+    display: none;
+}
+
+.filter-btn {
+    padding: 10px 22px;
+    background-color: var(--blanco);
+    border: 1.5px solid #E0E0E0;
+    border-radius: 25px;
+    color: var(--texto-oscuro);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: var(--transicion);
+    box-shadow: var(--sombra-suave);
+}
+
+.filter-btn:hover {
+    border-color: var(--azul-principal);
+    color: var(--azul-principal);
+    transform: translateY(-2px);
+}
+
+/* Estilo visual para resaltar el botón de filtro activo */
+#cat-all:checked~.filter-controls label[for="cat-all"],
+#cat-bombas:checked~.filter-controls label[for="cat-bombas"],
+#cat-tuberias:checked~.filter-controls label[for="cat-tuberias"],
+#cat-fumigadoras:checked~.filter-controls label[for="cat-fumigadoras"],
+#cat-aspersores:checked~.filter-controls label[for="cat-aspersores"],
+#cat-conexiones:checked~.filter-controls label[for="cat-conexiones"],
+#cat-fertilizante:checked~.filter-controls label[for="cat-fertilizante"],
+#cat-semillas:checked~.filter-controls label[for="cat-semillas"] {
+    background-color: var(--azul-principal);
+    color: var(--blanco);
+    border-color: var(--azul-principal);
+    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);
+}
+
+/* Ocultar automáticamente las tarjetas que no coincidan con el filtro activo */
+#cat-bombas:checked~.cards-grid .card:not(.cat-bombas),
+#cat-tuberias:checked~.cards-grid .card:not(.cat-tuberias),
+#cat-fumigadoras:checked~.cards-grid .card:not(.cat-fumigadoras),
+#cat-aspersores:checked~.cards-grid .card:not(.cat-aspersores),
+#cat-conexiones:checked~.cards-grid .card:not(.cat-conexiones),
+#cat-fertilizante:checked~.cards-grid .card:not(.cat-fertilizante),
+#cat-semillas:checked~.cards-grid .card:not(.cat-semillas) {
+    display: none;
+}
+
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(260px, 1fr));
+    gap: 25px;
+}
+
+.card {
+    background-color: var(--blanco);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--sombra-suave);
+    transition: var(--transicion);
+    border-top: 4px solid var(--azul-principal);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--sombra-fuerte);
+    border-top-color: var(--verde-principal);
+}
+
+.card-tag {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background-color: var(--rojo-principal);
+    color: var(--blanco);
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 2;
+}
+
+.img-container {
+    height: 220px;
+    overflow: hidden;
+    position: relative;
+}
+
+.card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: var(--transicion);
+}
+
+.card:hover .card-img {
+    transform: scale(1.08);
+}
+
+.card-body {
+    padding: 20px;
+    flex-grow: 1;
+}
+
+.card-body h3 {
+    color: var(--azul-oscuro);
+    margin-top: 0;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.card-body p {
+    color: black;
+    text-align: left;
+}
+
+/* =========================================================
+   AQUI TERMINA SECCION DE SERVICIO
+   ========================================================= */
+
+/* =========================================================
+    SECCIÓN MISIÓN, VISIÓN Y SUSTENTABILIDAD
+    ========================================================= */
+.about-section {
+    background: linear-gradient(135deg, rgba(25, 118, 210, 0.05), rgba(46, 125, 50, 0.05));
+    border-radius: 16px;
+    padding: 40px 30px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Contenedor que centra y enmarca la imagen */
+.about-img-container {
+    width: 100%;
+    max-height: 420px;
+    /* Limita la altura para que no sea un rectángulo gigante */
+    border-radius: 16px;
+    overflow: hidden;
+    /* Recorta los bordes de la foto limpiamente */
+    box-shadow: var(--sombra-suave);
+    margin-bottom: 30px;
+    border: 3px solid var(--blanco);
+}
+
+/* Estilo estilizado de la fotografía del equipo */
+.team {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    /* Rellena el espacio de forma equilibrada sin deformar las caras */
+    object-position: center 35%;
+    /* Centra el encuadre verticalmente para mostrar bien al equipo */
+    display: block;
+    transition: var(--transicion);
+}
+
+
+.mv-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.mv-card {
+    background: var(--blanco);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: var(--sombra-suave);
+    border-left: 5px solid var(--verde-principal);
+    transition: var(--transicion);
+}
+
+.mv-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--sombra-fuerte);
+    border-left-color: var(--rojo-principal);
+}
+
+.mv-card h3 {
+    color: var(--verde-principal);
+    font-size: 1.4rem;
+    margin-top: 0;
+}
+
+
+/* =========================================================
+    AQUI TERMINA SECCIÓN MISIÓN, VISIÓN Y SUSTENTABILIDAD
+    ========================================================= */
+
+/* =========================================================
+    SECCIÓN PREGUNTAS FRECUENTES (FAQ)
+    ========================================================= */
+.faq-section {
+    background: linear-gradient(135deg, rgba(25, 118, 210, 0.08), rgba(46, 125, 50, 0.08));
+    border-radius: 20px;
+    padding: 50px 30px;
+    margin-top: 40px;
+    border: 1.5px solid rgba(25, 118, 210, 0.15);
+    box-shadow: var(--sombra-suave);
+}
+
+.badge-sub {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.badge-text {
+    background-color: rgba(211, 47, 47, 0.1);
+    color: var(--rojo-principal);
+    font-size: 0.8rem;
+    font-weight: 800;
+    padding: 6px 16px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    display: inline-block;
+}
+
+.faq-container {
+    max-width: 850px;
+    margin: 30px auto 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.faq-item {
+    background-color: var(--blanco);
+    border-radius: 14px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    border: 1.5px solid rgba(25, 118, 210, 0.12);
+    overflow: hidden;
+    transition: var(--transicion);
+}
+
+.faq-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    border-color: var(--verde-principal);
+}
+
+.faq-item summary {
+    padding: 18px 22px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--azul-oscuro);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+.faq-item summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq-item summary::after {
+    content: '+';
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--azul-principal);
+    transition: var(--transicion);
+}
+
+.faq-item[open] summary::after {
+    content: '−';
+    color: var(--rojo-principal);
+    transform: rotate(180deg);
+}
+
+.faq-item[open] summary {
+    border-bottom: 1.5px solid #F0F0F0;
+    background-color: rgba(46, 125, 50, 0.03);
+}
+
+.faq-answer {
+    padding: 18px 22px;
+    color: #555;
+    font-size: 0.98rem;
+    line-height: 1.6;
+    background-color: #FAFAFA;
+}
+
+/* =========================================================
+    AQUI TERMINA SECCIÓN PREGUNTAS FRECUENTES (FAQ)
+    ========================================================= */
+
+
+
+/* =========================================================
+    VIDEOS RELACIONADOS CON EFECTO HOVER
+    ========================================================= */
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    justify-items: center;
+}
+
+.video-wrapper {
+    width: 100%;
+    max-width: 320px;
+    aspect-ratio: 1/ 1;
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: var(--sombra-suave);
+    background-color: var(--rojo-principal);
+    border: 3px solid transparent;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    position: relative;
+
+}
+
+.video-wrapper:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 12px 28px #dfe4df;
+    border-color: var(--verde-principal);
+}
+
+.video-wrapper video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    object-fit: cover;
+
+}
+
+/* =========================================================
+    AQUI TERMINA VIDEOS RELACIONADOS CON EFECTO HOVER
+    ========================================================= */
+
+/* =========================================================
+    FORMULARIO DE COTIZACIÓN
+    ========================================================= */
+.quote-container {
+    background: var(--blanco);
+    border-radius: 16px;
+    box-shadow: var(--sombra-fuerte);
+    padding: 40px;
+    max-width: 800px;
+    margin: 0 auto;
+    border-top: 6px solid var(--rojo-principal);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--azul-oscuro);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 12px 15px;
+    border: 1.5px solid #c2b9b9;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: var(--transicion);
+    background-color: #ffffff;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--verde-principal);
+    background-color: var(--blanco);
+    box-shadow: 0 0 0 3px #2e7d3226;
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, var(--verde-principal), var(--azul-principal));
+    color: var(--blanco);
+    border: none;
+    padding: 14px 30px;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: var(--transicion);
+    width: 100%;
+    margin-top: 10px;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px #2e7d3273;
+    background: linear-gradient(135deg, var(--verde-hover), var(--azul-oscuro));
+}
+
+/* =========================================================
+    AQUI TERMINA FORMULARIO DE COTIZACIÓN
+    ========================================================= */
+/* =========================================================
+    PIE DE PÁGINA (FOOTER) Y TARJETA DE CONTACTO DIRECTO
+    ========================================================= */
+footer {
+    background-color: #111827;
+    color: #9CA3AF;
+    padding-top: 50px;
+    padding-bottom: 20px;
+    border-top: 5px solid var(--verde-principal);
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 35px;
+    margin-bottom: 40px;
+}
+
+.footer-box h4 {
+    color: #FFFFFF !important;
+    font-size: 1.2rem;
+    margin-top: 0;
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 8px;
+}
+
+.footer-box h4::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40px;
+    height: 3px;
+    background-color: var(--rojo-principal);
+}
+
+.info-card-footer {
+    background-color: #1F2937;
+    padding: 20px;
+    border-radius: 10px;
+    border-left: 4px solid var(--azul-principal);
+}
+
+.info-card-footer p {
+    margin: 8px 0;
+    font-size: 0.9rem;
+    color: #D1D5DB;
+}
+
+/* TARJETA DESTACADA DE CONTACTO DIRECTO / WHATSAPP */
+.direct-contact-card {
+    background-color: #16232E;
+    border: 1.5px solid #1E3A3A;
+    border-radius: 20px;
+    padding: 25px 20px;
+    text-align: center;
+    box-shadow: 0 8px 20px #0000004d;
+    transition: var(--transicion);
+}
+
+.direct-contact-card:hover {
+    border-color: #25D366;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px #25d36626;
+}
+
+.direct-contact-card h5 {
+    color: #FFFFFF;
+    font-size: 1.25rem;
+    margin: 0 0 12px 0;
+    font-weight: 800;
+}
+
+.direct-contact-card p {
+    color: #9CA3AF;
+    font-size: 0.92rem;
+    margin: 0 0 20px 0;
+    line-height: 1.5;
+}
+
+.btn-whatsapp-direct {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background-color: #25D366;
+    color: #FFFFFF;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 1.05rem;
+    padding: 12px 24px;
+    border-radius: 30px;
+    transition: var(--transicion);
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+    width: 85%;
+}
+
+.btn-whatsapp-direct:hover {
+    background-color: #1EBE5D;
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
+}
+
+.social-links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    color: #FFFFFF !important;
+}
+
+.social-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    color: var(--blanco);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.88rem;
+    transition: var(--transicion);
+}
+
+.btn-facebook {
+    background: linear-gradient(45deg, #1877F2, #4394f6, #8aBBf8, #e4eefa);
+    color: #FFFFFF;
+}
+
+.btn-instagram {
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+    color: #FFFFFF;
+}
+
+.btn-tiktok {
+    background: linear-gradient(40deg, #69c7d0, #ec1f52, #000000);
+    color: #FFFFFF;
+}
+
+.social-btn:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.15);
+}
+
+.copyright {
+    text-align: center;
+    padding-top: 25px;
+    border-top: 1px solid #374151;
+    font-size: 0.85rem;
+    color: #6B7280;
+}
+
+/* =========================================================
+    AQUI TERMINA PIE DE PÁGINA (FOOTER) Y TARJETA DE CONTACTO DIRECTO
+    ========================================================= */
+
+/* =========================================================
+   ADAPTACIÓN PARA TELÉFONOS Y TABLETS (RESPONSIVE)
+   ========================================================= */
+
+/* 3. Estilos para pantallas pequeñas (Celulares y Tablets) */
+@media (max-width: 1200px) {
+
+    /* Hacemos visible el botón de hamburguesa */
+    .menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        cursor: pointer;
+        color: var(--texto-oscuro);
+        user-select: none;
+
+        /* Ayuda a centrarlo horizontalmente si hay espacio libre */
+        font-size: 1.8rem;
+        font-weight: bold;
+        padding: 5px 10px;
+    }
+
+    .titulo .negro {
+        color: #FFFFFF !important;
+    }
+
+    .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center !important;
+        /* <--- Esto centra verticalmente la hamburguesa, el logo y el botón de modo */
+        flex-wrap: nowrap;
+    }
+
+    .hero-content {
+        top: 30%;
+    }
+
+    .btn-modo {
+        padding: 4px 10px;
+        font-size: 0.75rem;
+        margin: 0 auto;
+        /* Ayuda a ubicarlo correctamente junto a la hamburguesa */
+
+        /* Controla su posición en el header flexible si es necesario */
+    }
+
+    /* Ocultamos el menú por defecto en el celular */
+    .nav-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: var(--blanco);
+        flex-direction: column;
+        padding: 20px 0;
+        display: none;
+        box-shadow: var(--sombra-fuerte);
+
+    }
+
+    /* LA MAGIA: Solo se muestra el menú cuando el checkbox de la hamburguesa está marcado */
+    #menu-toggle:checked~.nav-menu {
+        display: flex;
+    }
+
+
+}
