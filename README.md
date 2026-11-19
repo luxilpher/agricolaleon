@@ -1,18 +1,3 @@
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agrícola León C.A. - Tecnología y Sustentabilidad Agrícola</title>
-
-
-    <!-- FAVICON: Logotipo Oficial de Agrícola León -->
-    <link rel="icon" type="image/png" href="logotipo/agricola.jpeg">
-    <link rel="stylesheet" href="CSS/style.css">
-
-</head>
-
 
 
 <body>
